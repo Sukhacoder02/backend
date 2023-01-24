@@ -62,7 +62,39 @@ const todoListener = (req, res) => {
       res.write('Successfully deleted completed todos.');
       res.end();
     }
+  } else if (reqMethod === 'PATCH') {
+    if (reqUrl.startsWith('/todos/')) {
+      const todoId = Number(reqUrl.substring(7));
+      if (todoId) {
+        let data = '';
+        req.on('data', (chunk) => { data += chunk; });
+        req.on('end', _ => {
+          let dataObj = JSON.parse(data);
+          let foundTodo = todos.find((todo) => todo['id'] === todoId);
+          found = foundTodo;
+          Object.assign(foundTodo, dataObj);
+        });
+        res.writeHead(200, 'Successfully PATCHED');
+        res.end();
+      }
+    }
+  } else if (reqMethod === 'PUT') {
+    if (reqUrl.startsWith('/todos/')) {
+      const todoId = reqUrl.substring(7);
+      if (todoId) {
+        let data = '';
+        req.on('data', (chunk) => { data += chunk; });
+        req.on('end', _ => {
+          let dataObj = JSON.parse(data);
+          todos.splice(todoId - 1, 0, dataObj);
+          todos.splice(todoId, 1);
+        });
+        res.writeHead(204, 'No Content');
+        res.end('Successfully PUT');
+      }
+    }
   }
+  res.end();
 };
 
 const server = http.createServer(todoListener);

@@ -56,6 +56,12 @@ const todoListener = (req, res) => {
     res.write('Created new Task', 'utf-8', null);
     res.end();
 
+  } else if (reqMethod === 'DELETE') {
+    if (reqUrl === '/todos') {
+      todos = todos.filter((todo) => todo.isComplete === false);
+      res.write('Successfully deleted completed todos.');
+      res.end();
+    }
   }
 };
 

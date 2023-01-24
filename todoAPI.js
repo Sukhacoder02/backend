@@ -41,6 +41,21 @@ const todoListener = (req, res) => {
         res.end();
       }
     }
+  } else if (reqMethod === 'POST') {
+    let data = '';
+    req.on('data', (chunk) => {
+      data += chunk;
+    });
+    req.on('end', _ => {
+      let dataObj = JSON.parse(data);
+      dataObj['isCompleted'] = false;
+      dataObj["id"] = todos.length + 1;
+      todos.push(dataObj);
+    });
+    res.writeHead(201);
+    res.write('Created new Task', 'utf-8', null);
+    res.end();
+
   }
 };
 

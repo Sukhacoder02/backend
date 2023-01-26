@@ -11,26 +11,29 @@ let todos = [
     "id": 2
   }
 ];
+let id = 2;
 
 const postTodo = (req, res) => {
   let obj = req.body;
-  obj.isComplete = false;
-  obj.id = todos.length + 1;
-  todos.push(obj);
+  todos.push({ ...req.body, "isComplete": false, "id": id + 1 });
+  id++;
   res.status(201);
   res.send(obj);
 }
 
-const getTodos = (req, res) => {
+const getTodos = (_, res) => {
   res.status(200);
   res.send(todos);
 }
 
 const getSingleTodo = (req, res) => {
-  let id = Number(req.params.id);
-  let foundTodo = todos.find(todo => todo['id'] === id);
-  res.status(200);
-  res.send(foundTodo === undefined ? 'Cannot find given todo' : foundTodo);
+  const id = Number(req.params.id);
+  if (id) {
+    let foundTodo = todos.find(todo => todo['id'] === id);
+    res.status(200);
+    res.send(foundTodo === undefined ? 'Cannot find given todo' : foundTodo);
+  }
+
 }
 
 const deleteCompletedTodos = (req, res) => {
@@ -41,28 +44,26 @@ const deleteCompletedTodos = (req, res) => {
 
 const patchSingleTodo = (req, res) => {
   let obj = req.body;
-  let id = Number(req.params.id);
+  const id = Number(req.params.id);
   if (id) {
     let foundTodo = todos.find((todo) => todo.id === id);
     if (foundTodo) {
       Object.assign(foundTodo, obj);
     }
-    res.status(204);
-    res.send();
+    res.status(204).send();
   }
 };
 
 const putTodo = (req, res) => {
-  let obj = req.body;
-  let id = Number(req.params.id);
+  const obj = req.body;
+  const id = Number(req.params.id);
   if (id) {
     obj.isComplete = false;
     obj.id = id;
     todos.splice(id - 1, 0, obj);
     todos.splice(id, 1);
+    res.status(200).send(obj);
   }
-  res.status(204);
-  res.send();
 };
 
 module.exports = { postTodo, putTodo, deleteCompletedTodos, patchSingleTodo, getSingleTodo, getTodos };

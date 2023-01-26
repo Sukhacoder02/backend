@@ -4,11 +4,15 @@ const express = require('express');
 
 const router = express.Router();
 
-router.get('/todos', getTodos);
-router.get('/todos/:id', getSingleTodo);
-router.post('/todos', postTodo);
-router.delete('/todos', deleteCompletedTodos);
-router.put('/todos/:id', putTodo);
-router.patch('/todos/:id', patchSingleTodo);
+router.route('/todos')
+    .get(getTodos)
+    .post(postTodo)
+    .delete(deleteCompletedTodos);
+
+
+router.route('/todos/:id')
+    .get(getSingleTodo)
+    .put(putTodo)
+    .patch(patchSingleTodo);
 
 module.exports = router;

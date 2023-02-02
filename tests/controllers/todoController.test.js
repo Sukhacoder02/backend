@@ -1,8 +1,8 @@
 
 // require todo controller
-const todoController = require('../src/controllers/todoController');
+const todoController = require('../../src/controllers/todoController');
 // required todo services
-const todoServices = require('../src/services/todoServices');
+const todoServices = require('../../src/services/todoServices');
 
 describe('todoController', () => {
   describe('function getTodos', () => {
@@ -39,7 +39,7 @@ describe('todoController', () => {
         }
       };
       const mockRes = {
-        status: jest.fn(),
+        status: jest.fn().mockReturnThis(),
         json: jest.fn()
       };
 

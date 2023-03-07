@@ -2,76 +2,75 @@ const { Task } = require('../database/models');
 // require the HttpError class
 const HttpError = require('../utils/HttpError');
 
-
-
 const todoServices = {
-  'postTodo': async (body) => {
+  postTodo: async (body) => {
     const newTodo = await Task.create({ ...body, isComplete: false });
+    delete newTodo.dataValues.createdAt;
+    delete newTodo.dataValues.updatedAt;
     return newTodo;
   },
-  'getTodos': async () => {
+  getTodos: async () => {
     const allTasks = await Task.findAll({
-      attributes: ['id', 'title', 'isComplete']
+      attributes: ['id', 'title', 'isComplete'],
     });
     return allTasks;
   },
-  'getSingleTodo': async (id) => {
+  getSingleTodo: async (id) => {
     const thisTask = await Task.findOne({
       where: {
-        id: id
+        id: id,
       },
-      attributes: ['id', 'title', 'isComplete']
+      attributes: ['id', 'title', 'isComplete'],
     });
     if (!thisTask) {
       throw new HttpError('Task not found', 404);
     }
     return thisTask;
   },
-  'deleteCompletedTodos': async () => {
+  deleteCompletedTodos: async () => {
     await Task.destroy({
       where: {
-        isComplete: true
-      }
+        isComplete: true,
+      },
     });
     return await Task.findAll({
-      attributes: ['id', 'title', 'isComplete']
+      attributes: ['id', 'title', 'isComplete'],
     });
   },
-  'patchSingleTodo': async (id, body) => {
+  patchSingleTodo: async (id, body) => {
     await Task.update(body, {
       where: {
-        id: id
+        id: id,
       },
     });
     const updatedTodo = await Task.findOne({
       where: {
-        id: id
+        id: id,
       },
-      attributes: ['id', 'title', 'isComplete']
+      attributes: ['id', 'title', 'isComplete'],
     });
     if (!updatedTodo) {
       throw new HttpError('Task not found', 404);
     }
     return updatedTodo;
-
   },
-  'putTodo': async (id, body) => {
+  putTodo: async (id, body) => {
     await Task.update(body, {
       where: {
-        id: id
+        id: id,
       },
     });
     const updatedTodo = await Task.findOne({
       where: {
-        id: id
+        id: id,
       },
-      attributes: ['id', 'title', 'isComplete']
+      attributes: ['id', 'title', 'isComplete'],
     });
     if (!updatedTodo) {
       throw new HttpError('Task not found', 404);
     }
     return updatedTodo;
-  }
+  },
 };
 
 module.exports = todoServices;
